@@ -9,6 +9,12 @@ Reproducible Python workflow for classifying seven Gaia DR3 catalogue-derived sp
 
 **Scientific scope:** internal results assess agreement with Gaia-derived `SpType-ELS` catalogue labels. They are **not** independently verified spectroscopic classification accuracy. The external comparison is conditional on availability and quality of the matched LAMOST sample.
 
+## Spectral classes
+
+![Representative stellar examples for O, B, A, F, G, K, and M spectral classes](Figure1.png)
+
+*Figure 1. Representative stars illustrating the O--B--A--F--G--K--M sequence. These images are provided for visual reference only and are not part of the modelling dataset.*
+
 ## Dataset: Kaggle
 
 The data are obtained **separately from Kaggle** and are not redistributed here.
@@ -30,7 +36,7 @@ After downloading, ensure the source CSV exists at `data/dataGaia2.csv` (or upda
 
 ## Environment and installation
 
-The source notebook records **Python 3.11.14** on macOS Apple Silicon with **NumPy 1.26.4, pandas 2.3.3, scikit-learn 1.4.2, CatBoost 1.2.8, LightGBM 4.6.0, XGBoost 3.1.3, TensorFlow 2.16.2, SHAP 0.51.0, and Astropy 7.2.0**. The pinned dependencies and remaining supported ranges are in `requirements.txt`.
+The reference computational environment uses **Python 3.11.14** on macOS Apple Silicon with **NumPy 1.26.4, pandas 2.3.3, scikit-learn 1.4.2, CatBoost 1.2.8, LightGBM 4.6.0, XGBoost 3.1.3, TensorFlow 2.16.2, SHAP 0.51.0, and Astropy 7.2.0**. Dependency versions and compatibility constraints are listed in `requirements.txt`.
 
 ```bash
 # Run these commands from the repository root.
@@ -60,11 +66,11 @@ Run the notebooks in the order below, using **Kernel → Restart & Run All** for
 
 SHAP values are calculated by CatBoost's native TreeSHAP algorithm by default (`shap_backend="catboost_native"`), with the original `shap.TreeExplainer` API available through `shap_backend="tree_explainer"` when compatible with the installed packages.
 
-The modules in `src/gaia_pipeline.py` implement **the actual reusable training, preprocessing, inference and metric procedures**. The notebooks call those methods and provide documented experiments. Model hyperparameters, random seed, feature caps and execution flags are defined in `config/experiment.json`.
+The `src/gaia_pipeline.py` module contains shared preprocessing, training, prediction, and evaluation procedures. The notebooks call those methods and provide documented experiments. Model hyperparameters, random seed, feature caps and execution flags are defined in `config/experiment.json`.
 
 ### Full reproduction versus a quick pipeline check
 
-`run_full_benchmark=true`, `run_cross_validation=true`, and `run_dnn=true` are the **publication-intended defaults**. Training all models and five CV folds, particularly the SVM and DNN, may take significant time and memory. To test the workflow quickly, temporarily set:
+`run_full_benchmark=true`, `run_cross_validation=true`, and `run_dnn=true` enable the **complete benchmark**. Training all models and five CV folds, particularly the SVM and DNN, may take significant time and memory. For a short integration check, the following configuration skips the full model benchmark:
 
 ```json
 "run_full_benchmark": false,
@@ -74,7 +80,7 @@ The modules in `src/gaia_pipeline.py` implement **the actual reusable training, 
 "run_balancing_ensemble": false
 ```
 
-A quick run trains only the three ensemble base learners, and **does not reproduce the full ten-model benchmark**. Restore the publication-intended settings before generating final tables.
+A quick run trains only the three ensemble base learners, and **does not reproduce the full ten-model benchmark**. Use the full settings for scientific result reproduction.
 
 ## Exact preprocessing and experimental populations
 
@@ -96,13 +102,13 @@ A quick run trains only the three ensemble base learners, and **does not reprodu
 
 - All intermediate data, trained models, cached LAMOST matches, tables and figures are written under `outputs/` or `data/` and excluded from Git via `.gitignore`.
 - Publishing the source code without generated data files is intentional. Re-run with the Kaggle dataset to regenerate the full results.
-- Small variations can occur with dependency versions, hardware and numerical implementation. The provided code follows the user-supplied research notebook; **the complete pipeline has not been independently re-executed on the original Kaggle CSV in this packaging environment**, because the CSV was not supplied.
-- Tests in `tests/` verify essential transformations and invariants on synthetic records. Synthetic tests are not evidence of reproducing the paper's numerical metrics.
+- Reproducing the reported metrics requires the source Kaggle CSV and the full execution configuration. Numerical results may vary slightly with package versions, platform, and hardware.
+- Run `python -m pytest tests/ -q` to check preprocessing and pipeline invariants on small synthetic samples. These tests complement, but do not replace, reproduction with the source dataset.
 
-## Repository and manuscript citation
+## Citation and repository
 
-**Gudiño-Ochoa, Alberto; Ochoa-Ornelas, Raquel.** *Gaia DR3 Catalogue Spectral-Type Classification with Ensemble Learning.* Reproducibility repository associated with the Franklin Open manuscript.
+Gudiño-Ochoa, Alberto, and Raquel Ochoa-Ornelas. *Gaia DR3 Catalogue Spectral-Type Classification with Ensemble Learning.* Source code and reproducibility materials for the manuscript submitted to *Franklin Open*.
 
-**Repository URL:** **[ADD THE PUBLIC GITHUB URL AFTER CREATING THE REPOSITORY]**. Insert the final, publicly accessible URL in the manuscript's **Data Availability** section before resubmission. A public Zenodo release/DOI can optionally be added after the repository is frozen.
+**GitHub repository:** https://github.com/AlbertoGudinoOchoa/Gaia-DR3-Spectral-Type-Classification
 
-No license is assigned in this package; the authors should choose and add an appropriate license before publication.
+**Data source:** [Gaia 626k stars from DR3 (Data release 3) V2](https://www.kaggle.com/datasets/realkiller69/gaia-stars-dataset-from-dr3-data-release-3). The dataset is distributed by its original publisher and is not included in this repository.
