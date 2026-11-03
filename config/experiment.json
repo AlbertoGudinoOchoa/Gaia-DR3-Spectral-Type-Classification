@@ -1,0 +1,114 @@
+{
+  "data_file": "data/dataGaia2.csv",
+  "spectral_classes": [
+    "O",
+    "B",
+    "A",
+    "F",
+    "G",
+    "K",
+    "M"
+  ],
+  "quality_filters": {
+    "ruwe_max": 1.4,
+    "pstar_min": 0.9,
+    "pgal_max": 0.1
+  },
+  "random_state": 42,
+  "test_size": 0.2,
+  "cv_folds": 5,
+  "class_cap": 5000,
+  "sensitivity_caps": [
+    1000,
+    2500,
+    5000,
+    10000
+  ],
+  "run_full_benchmark": true,
+  "run_cross_validation": true,
+  "run_dnn": true,
+  "run_tsne": true,
+  "tsne_sample": 25000,
+  "run_balancing_ensemble": true,
+  "shap_sample": 3000,
+  "run_permutation_importance": false,
+  "run_external_query": false,
+  "lamost_match_csv": "data/lamost_dr11_matches.csv",
+  "lamost_batch_size": 500,
+  "lamost_snr_min": 10,
+  "hyperparameters": {
+    "LightGBM": {
+      "n_estimators": 400,
+      "learning_rate": 0.05,
+      "num_leaves": 31
+    },
+    "XGBoost": {
+      "eval_metric": "mlogloss",
+      "tree_method": "hist",
+      "max_depth": 8,
+      "learning_rate": 0.1,
+      "n_estimators": 400
+    },
+    "DecisionTree": {
+      "max_depth": 15,
+      "min_samples_split": 10,
+      "min_samples_leaf": 5
+    },
+    "GradientBoosting": {
+      "n_estimators": 300,
+      "learning_rate": 0.05,
+      "max_depth": 3,
+      "subsample": 0.8
+    },
+    "SVM": {
+      "kernel": "rbf",
+      "probability": true,
+      "C": 3,
+      "gamma": "scale"
+    },
+    "RandomForest": {
+      "n_estimators": 400,
+      "max_depth": null,
+      "n_jobs": -1
+    },
+    "KNN": {
+      "n_neighbors": 15
+    },
+    "MLP": {
+      "hidden_layer_sizes": [
+        256,
+        128,
+        64
+      ],
+      "activation": "relu",
+      "learning_rate_init": 0.001,
+      "max_iter": 300,
+      "early_stopping": true
+    },
+    "CatBoost": {
+      "depth": 8,
+      "learning_rate": 0.1,
+      "iterations": 400,
+      "loss_function": "MultiClass"
+    },
+    "DNN": {
+      "hidden_units": [
+        256,
+        128,
+        64
+      ],
+      "dropout": [
+        0.3,
+        0.3,
+        0.2
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 256,
+      "cv_epochs": 40,
+      "final_epochs": 100,
+      "early_stopping_patience": 5,
+      "validation_fraction": 0.1
+    }
+  },
+  "shap_backend": "catboost_native"
+}
